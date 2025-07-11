@@ -1,0 +1,83 @@
+﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+@using OrchidManagement.Client.Services.Auth
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+<div class="home-layout">
+    <header class="main-header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <h2 class="brand-title">🌺 Orchid Paradise</h2>
+                    <p class="brand-subtitle">Premium Orchid Collection</p>
+                </div>
+                
+                <div class="nav-menu">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/orchids" class="nav-link">Orchids</a>
+                    <a href="/categories" class="nav-link">Categories</a>
+                    <a href="/about" class="nav-link">About</a>
+                </div>
+
+                <div class="nav-auth">
+                    <AuthorizeView>
+                        <Authorized>
+                            <div class="user-info">
+                                <span class="welcome-text">Welcome, @context.User.Identity?.Name</span>
+                                <button class="btn btn-logout" @onclick="HandleLogout">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </div>
+                        </Authorized>
+                        <NotAuthorized>
+                            <button class="btn btn-login" @onclick="GoToLogin">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </button>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        @Body
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>🌺 Orchid Paradise</h4>
+                <p>Your trusted source for premium orchids and expert care guidance.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="/orchids">Browse Orchids</a>
+                <a href="/categories">Categories</a>
+                <a href="/care-guide">Care Guide</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p>📧 info@orchidparadise.com</p>
+                <p>📞 +1 (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Orchid Paradise. All rights reserved.</p>
+        </div>
+    </footer>
+</div>
+
+@code {
+    private async Task HandleLogout()
+    {
+        await AuthService.Logout();
+        NavigationManager.NavigateTo("/");
+    }
+
+    private void GoToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+}

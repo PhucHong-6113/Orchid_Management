@@ -1,0 +1,185 @@
+﻿@page "/"
+@layout HomeLayout
+@using OrchidManagement.Client.Models
+@using OrchidManagement.Client.Services.Orchid
+@inject OrchidService OrchidService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Orchid Paradise - Premium Orchid Collection</PageTitle>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+        <div>
+            <h1 class="hero-title">Welcome to Orchid Paradise</h1>
+            <p class="hero-subtitle">Discover the world's most beautiful and exotic orchids</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" @onclick="BrowseOrchids">
+                    <i class="fas fa-seedling"></i> Browse Collection
+                </button>
+                <button class="btn btn-secondary" @onclick="LearnMore">
+                    <i class="fas fa-book-open"></i> Care Guide
+                </button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800" alt="Beautiful Orchids" />
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why Choose Orchid Paradise?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🌺</div>
+                <h3>Premium Quality</h3>
+                <p>Hand-selected orchids from the finest growers worldwide</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🚚</div>
+                <h3>Safe Delivery</h3>
+                <p>Secure packaging ensures your orchids arrive in perfect condition</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Expert Support</h3>
+                <p>Comprehensive care guides and ongoing support from orchid specialists</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💖</div>
+                <h3>Satisfaction Guarantee</h3>
+                <p>30-day guarantee on all orchids with full care instructions</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Orchids Section -->
+<section class="featured-section">
+    <div class="container">
+        <h2 class="section-title">Featured Orchids</h2>
+        <p class="section-subtitle">Discover our most popular and stunning varieties</p>
+        
+        @if (featuredOrchids == null)
+        {
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Loading beautiful orchids...
+            </div>
+        }
+        else if (!featuredOrchids.Any())
+        {
+            <div class="no-orchids">
+                <i class="fas fa-seedling"></i>
+                <p>Coming soon - Beautiful orchids will be available here!</p>
+            </div>
+        }
+        else
+        {
+            <div class="orchids-grid">
+                @foreach (var orchid in featuredOrchids)
+                {
+                    <div class="orchid-card">
+                        <div class="orchid-image">
+                            <img src="@GetOrchidImage(orchid.ImageUrl)" alt="@orchid.Name" />
+                            @if (orchid.IsNatural)
+                            {
+                                <span class="natural-badge">🌿 Natural</span>
+                            }
+                        </div>
+                        <div class="orchid-info">
+                            <h3 class="orchid-name">@orchid.Name</h3>
+                            <p class="orchid-category">@orchid.CategoryName</p>
+                            <p class="orchid-description">@GetShortDescription(orchid.Description)</p>
+                            <div class="orchid-footer">
+                                <span class="orchid-price">$@orchid.Price.ToString("F2")</span>
+                                <button class="btn btn-small btn-primary">
+                                    <i class="fas fa-eye"></i> View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about-section">
+    <div class="container">
+        <div class="about-content">
+            <div class="about-text">
+                <h2>About Orchid Paradise</h2>
+                <p>With over 20 years of experience in orchid cultivation, Orchid Paradise has become the premier destination for orchid enthusiasts worldwide. Our passion for these extraordinary flowers drives us to source only the finest specimens from trusted growers.</p>
+                <p>Whether you're a beginner looking for your first orchid or an experienced collector seeking rare varieties, we're here to help you discover the perfect addition to your collection.</p>
+                <div class="stats">
+                    <div class="stat">
+                        <h3>500+</h3>
+                        <p>Orchid Varieties</p>
+                    </div>
+                    <div class="stat">
+                        <h3>10,000+</h3>
+                        <p>Happy Customers</p>
+                    </div>
+                    <div class="stat">
+                        <h3>20+</h3>
+                        <p>Years Experience</p>
+                    </div>
+                </div>
+            </div>
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600" alt="Orchid Garden" />
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private IEnumerable<OrchidDto>? featuredOrchids;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            featuredOrchids = await OrchidService.GetFeaturedOrchidsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading featured orchids: {ex.Message}");
+            featuredOrchids = new List<OrchidDto>();
+        }
+    }
+
+    private void BrowseOrchids()
+    {
+        NavigationManager.NavigateTo("/orchids");
+    }
+
+    private void LearnMore()
+    {
+        NavigationManager.NavigateTo("/care-guide");
+    }
+
+    private string GetOrchidImage(string imageUrl)
+    {
+        if (!string.IsNullOrEmpty(imageUrl))
+            return imageUrl;
+        
+        // Fallback to a beautiful orchid image
+        return "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400";
+    }
+
+    private string GetShortDescription(string description)
+    {
+        if (string.IsNullOrEmpty(description))
+            return "A beautiful orchid specimen perfect for any collection.";
+        
+        if (description.Length <= 100)
+            return description;
+        
+        return description.Substring(0, 97) + "...";
+    }
+}

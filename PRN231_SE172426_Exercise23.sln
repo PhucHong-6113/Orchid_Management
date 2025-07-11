@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessObject", "BusinessO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{6686DF26-8A18-40B6-BA25-D0A435D3E2BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrchidManagement.Client", "OrchidManagement.Client\OrchidManagement.Client.csproj", "{6FC96549-EA92-4805-A4A4-B923551C3ACD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{6686DF26-8A18-40B6-BA25-D0A435D3E2BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6686DF26-8A18-40B6-BA25-D0A435D3E2BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6686DF26-8A18-40B6-BA25-D0A435D3E2BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FC96549-EA92-4805-A4A4-B923551C3ACD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FC96549-EA92-4805-A4A4-B923551C3ACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FC96549-EA92-4805-A4A4-B923551C3ACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FC96549-EA92-4805-A4A4-B923551C3ACD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
