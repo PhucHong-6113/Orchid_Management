@@ -14,6 +14,17 @@ namespace Service.OrderService
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IOrchidRepository _orchidRepository;
+        private readonly IVNPayService _vnPayService;
+
+        public OrderService(
+            IOrderRepository orderRepository,
+            IOrchidRepository orchidRepository,
+            IVNPayService vnPayService)
+        {
+            _orderRepository = orderRepository;
+            _orchidRepository = orchidRepository;
+            _vnPayService = vnPayService;
+        }
 
         public OrderService(IOrderRepository orderRepository, IOrchidRepository orchidRepository)
         {
@@ -102,6 +113,43 @@ namespace Service.OrderService
                     ImageUrl = od.Orchid?.OrchidUrl
                 }).ToList()
             };
+        }
+
+        public async Task<VNPaymentResponse> CreatePaymentForOrderAsync(Guid orderId, string returnUrl = null)
+        {
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
+            if (order == null)
+                throw new Exception("Order not found");
+
+            if (order.OrderStatus != "Pending")
+                throw new Exception("Order is not in pending state");
+
+            var vnPayRequest = new VNPaymentRequest
+            {
+                OrderId = order.Id.ToString(),
+                Amount = order.TotalAmount,
+                OrderInfo = $"Thanh toan don hang: {order.Id}",
+                OrderType = "orchid",
+                ReturnUrl = returnUrl
+            };
+
+            await _orderRepository.UpdateOrderStatusAsync(orderId, "Processing");
+
+            return await _vnPayService.CreatePaymentUrl(vnPayRequest);
+        }
+
+        public async Task<bool> ProcessPaymentReturnAsync(VNPaymentReturnRequest returnRequest)
+        {
+            if (!Guid.TryParse(returnRequest.OrderId, out Guid orderId))
+                return false;
+
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
+            if (order == null)
+                return false;
+
+            string newStatus = returnRequest.ResponseCode == "00" ? "Complete" : "Failed";
+
+            return await _orderRepository.UpdateOrderStatusAsync(orderId, newStatus);
         }
     }
 }

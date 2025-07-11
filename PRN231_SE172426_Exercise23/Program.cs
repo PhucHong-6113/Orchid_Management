@@ -35,8 +35,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddHttpClient<IPayOsService, PayOsService>();
-builder.Services.AddScoped<IPayOsService, PayOsService>();
+builder.Services.AddScoped<IVNPayService, VNPayService>();
 
 var jwtSection = builder.Configuration.GetSection("JwtSettings");
 builder.Services.Configure<JwtSettings>(jwtSection);
