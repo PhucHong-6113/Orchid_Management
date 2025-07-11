@@ -36,6 +36,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IVNPayService, VNPayService>();
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 var jwtSection = builder.Configuration.GetSection("JwtSettings");
 builder.Services.Configure<JwtSettings>(jwtSection);
@@ -68,6 +69,16 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorClient", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -117,9 +128,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowBlazorClient");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseStaticFiles();
+app.UseBlazorFrameworkFiles();
+
 app.MapControllers();
+
+app.MapFallbackToFile("index.html");
 
 app.Run();

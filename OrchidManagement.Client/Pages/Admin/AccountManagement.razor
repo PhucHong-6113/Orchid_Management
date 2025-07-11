@@ -1,0 +1,115 @@
+﻿@page "/account-management"
+@using Microsoft.AspNetCore.Authorization
+@using OrchidManagement.Client.Models
+@using OrchidManagement.Client.Services.Account
+@inject AccountService AccountService
+@attribute [Authorize(Roles = "admin")]
+
+<h3>Account Management</h3>
+
+<div class="form-group mb-3">
+    <input type="text" class="form-control" placeholder="Search by name or email..." 
+           @bind-value="searchTerm" @bind-value:event="oninput" @onkeyup="SearchAccounts" />
+</div>
+
+@if (accounts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in accounts)
+            {
+                <tr>
+                    <td>@account.AccountName</td>
+                    <td>@account.Email</td>
+                    <td>@account.RoleName</td>
+                    <td>
+                        <span class="badge @(account.Status == "Active" ? "bg-success" : "bg-danger")">
+                            @account.Status
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm @(account.Status == "Active" ? "btn-warning" : "btn-success")" 
+                                @onclick="() => ToggleStatus(account)">
+                            @(account.Status == "Active" ? "Deactivate" : "Activate")
+                        </button>
+                        <button class="btn btn-sm btn-info" @onclick="() => ViewDetails(account)">
+                            Details
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<AccountDto> accounts;
+    private string searchTerm = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAccounts();
+    }
+
+    private async Task LoadAccounts()
+    {
+        try
+        {
+            accounts = (await AccountService.GetAllAccountsAsync()).ToList();
+        }
+        catch (Exception ex)
+        {
+            // Handle error - log or display
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task SearchAccounts()
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            await LoadAccounts();
+        }
+        else
+        {
+            accounts = (await AccountService.SearchAccountsAsync(searchTerm)).ToList();
+        }
+    }
+
+    private async Task ToggleStatus(AccountDto account)
+    {
+        try
+        {
+            var success = await AccountService.ToggleAccountStatusAsync(account.AccountId);
+            if (success)
+            {
+                // Update the local list
+                account.Status = account.Status == "Active" ? "Inactive" : "Active";
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle error
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private void ViewDetails(AccountDto account)
+    {
+        // Navigate to details page
+        // NavigationManager.NavigateTo($"/account/{account.AccountId}");
+    }
+}

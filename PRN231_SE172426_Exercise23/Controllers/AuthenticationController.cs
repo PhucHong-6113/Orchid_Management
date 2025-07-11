@@ -21,6 +21,8 @@ namespace PRN231_SE172426_Exercise23.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel model)
         {
+            Console.WriteLine($"Login endpoint hit with email: {model?.Email}");
+            
             if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
                 return BadRequest(new { message = "Email and password are required" });
 

@@ -1,0 +1,74 @@
+﻿@page "/login"
+@using OrchidManagement.Client.Models
+@using OrchidManagement.Client.Services.Auth
+@using System
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<h3>Login</h3>
+
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <InputText id="email" @bind-Value="loginModel.Email" class="form-control" />
+    </div>
+    
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <InputText id="password" @bind-Value="loginModel.Password" type="password" class="form-control" />
+    </div>
+    
+    <button type="submit" class="btn btn-primary" disabled="@isLoading">
+        @if (isLoading)
+        {
+            <span>Processing...</span>
+        }
+        else
+        {
+            <span>Login</span>
+        }
+    </button>
+    
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger mt-3">@errorMessage</div>
+    }
+</EditForm>
+
+@code {
+    private LoginModel loginModel = new();
+    private string errorMessage;
+    private bool isLoading = false;
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            isLoading = true;
+            errorMessage = null;
+            
+            var result = await AuthService.Login(loginModel);
+            if (result != null)
+            {
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = "Invalid email or password";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Login failed: {ex.Message}";
+            await JSRuntime.InvokeVoidAsync("console.error", ex.ToString());
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
