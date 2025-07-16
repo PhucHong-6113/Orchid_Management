@@ -51,7 +51,7 @@ namespace Repository.Order
 
                 foreach (var detail in orderDetails)
                 {
-                    detail.Id = order.Id;
+                    detail.OrderId = order.Id; // Use OrderId instead of Id
                     _orderDetailRepository.Add(detail);
                 }
                 await _orderDetailRepository.SaveChangesAsync();

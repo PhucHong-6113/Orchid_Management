@@ -8,6 +8,6 @@ namespace Service.JWT
 {
     public interface IJwtTokenService
     {
-        string GenerateToken(string userId, string username, IEnumerable<string> roles = null);
+        string GenerateToken(string userId, string username, string email, IEnumerable<string> roles = null);
     }
 }

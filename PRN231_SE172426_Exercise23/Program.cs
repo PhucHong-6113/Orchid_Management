@@ -1,6 +1,7 @@
 using DAO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository;
@@ -10,6 +11,7 @@ using Repository.Orchid;
 using Repository.Order;
 using Service.Authentication;
 using Service.CategoryService;
+using Service.EmailService;
 using Service.JWT;
 using Service.OrchidService;
 using Service.OrderService;
@@ -18,31 +20,42 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Update these registrations in Program.cs
+// Add DbContext
 builder.Services.AddDbContext<OrchidManagamentContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("OrchidManagementDB")));
 
 // Register OrchidManagamentContext as DbContext for generic repository
 builder.Services.AddScoped<DbContext>(provider => provider.GetService<OrchidManagamentContext>());
 
-// Other registrations
+// Add Memory Cache for OTP service
+builder.Services.AddMemoryCache();
+
+// Configure Email Settings
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+// Register repositories
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IOrchidRepository, OrchidRepository>();
-builder.Services.AddScoped<IOrchidService, OrchidService>();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ISystemAccountRepository, SystemAccountRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+// Register services
+builder.Services.AddScoped<IOrchidService, OrchidService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IVNPayService, VNPayService>();
-builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IOTPService, OTPService>();
 
+// Configure JWT
 var jwtSection = builder.Configuration.GetSection("JwtSettings");
 builder.Services.Configure<JwtSettings>(jwtSection);
 var jwtSettings = jwtSection.Get<JwtSettings>();
 var key = Encoding.ASCII.GetBytes(jwtSettings.SecretKey);
-// Register JWT service
+
+// Register JWT service (only once)
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 builder.Services.AddAuthentication(options =>
@@ -123,7 +136,6 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Orchid API v1");
         c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
     });
-
 }
 
 app.UseHttpsRedirection();

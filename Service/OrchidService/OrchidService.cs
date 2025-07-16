@@ -26,7 +26,11 @@ namespace Service.OrchidService
                 Name = o.OrchidName,
                 Description = o.OrchidDescription,
                 Price = o.Price,
-                CategoryName = o.Category?.CategoryName ?? "Uncategorized",
+                Category = new()
+                {
+                    CategoryId = o.Category?.CategoryId ?? Guid.Empty,
+                    CategoryName = o.Category?.CategoryName ?? "Uncategorized",
+                },
                 ImageUrl = o.OrchidUrl,
                 IsNatural = o.IsNatural
             });
@@ -44,7 +48,11 @@ namespace Service.OrchidService
                 Name = orchid.OrchidName,
                 Description = orchid.OrchidDescription,
                 Price = orchid.Price,
-                CategoryName = orchid.Category?.CategoryName ?? "Uncategorized",
+                Category = new()
+                {
+                    CategoryId = orchid.Category?.CategoryId ?? Guid.Empty,
+                    CategoryName = orchid.Category?.CategoryName ?? "Uncategorized",
+                },
                 ImageUrl = orchid.OrchidUrl,
                 IsNatural = orchid.IsNatural
             };
@@ -57,7 +65,7 @@ namespace Service.OrchidService
                 OrchidId = Guid.NewGuid(),
                 OrchidName = orchidDto.OrchidName,
                 OrchidDescription = orchidDto.OrchidDescription,
-                OrchidUrl = orchidDto.OrchidUrl,
+                OrchidUrl = "/images/create_orchid.png",
                 Price = orchidDto.Price,
                 CategoryId = orchidDto.CategoryId,
                 IsNatural = orchidDto.IsNatural
@@ -75,7 +83,11 @@ namespace Service.OrchidService
                 Name = addedOrchid.OrchidName,
                 Description = addedOrchid.OrchidDescription,
                 Price = addedOrchid.Price,
-                CategoryName = addedOrchid.Category?.CategoryName ?? "Uncategorized",
+                Category = new()
+                {
+                    CategoryId = addedOrchid.Category?.CategoryId ?? Guid.Empty,
+                    CategoryName = addedOrchid.Category?.CategoryName ?? "Uncategorized",
+                },
                 ImageUrl = addedOrchid.OrchidUrl,
                 IsNatural = addedOrchid.IsNatural
             };
@@ -110,10 +122,42 @@ namespace Service.OrchidService
                 Name = updatedOrchid.OrchidName,
                 Description = updatedOrchid.OrchidDescription,
                 Price = updatedOrchid.Price,
-                CategoryName = updatedOrchid.Category?.CategoryName ?? "Uncategorized",
+                Category = new()
+                {
+                    CategoryId = updatedOrchid.Category?.CategoryId ?? Guid.Empty,
+                    CategoryName = updatedOrchid.Category?.CategoryName ?? "Uncategorized",
+                },
                 ImageUrl = updatedOrchid.OrchidUrl,
                 IsNatural = updatedOrchid.IsNatural
             };
+        }
+
+        public async Task<IEnumerable<OrchidDto>> SearchOrchidsAsync(OrchidSearchDto searchDto)
+        {
+            var orchids = await _orchidRepository.SearchOrchidsAsync(
+                searchDto.Name,
+                searchDto.CategoryId,
+                searchDto.IsNatural,
+                searchDto.MinPrice,
+                searchDto.MaxPrice,
+                searchDto.Page,
+                searchDto.PageSize
+            );
+
+            return orchids.Select(o => new OrchidDto
+            {
+                Id = o.OrchidId,
+                Name = o.OrchidName,
+                Description = o.OrchidDescription,
+                Price = o.Price,
+                Category = new()
+                {
+                    CategoryId = o.Category?.CategoryId ?? Guid.Empty,
+                    CategoryName = o.Category?.CategoryName ?? "Uncategorized",
+                },
+                ImageUrl = o.OrchidUrl,
+                IsNatural = o.IsNatural
+            });
         }
     }
 }

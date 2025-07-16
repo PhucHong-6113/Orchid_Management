@@ -20,7 +20,6 @@ namespace PRN231_SE172426_Exercise23.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetAllCategories()
         {
             var categories = await _categoryService.GetAllCategoriesAsync();

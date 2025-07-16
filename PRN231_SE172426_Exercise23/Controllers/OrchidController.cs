@@ -17,15 +17,38 @@ namespace PRN231_SE172426_Exercise23.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<OrchidDto>>> GetAllOrchids()
         {
             var orchids = await _orchidService.GetAllOrchidsAsync();
             return Ok(orchids);
         }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<OrchidDto>>> SearchOrchids(
+            [FromQuery] string? name,
+            [FromQuery] Guid? categoryId,
+            [FromQuery] bool? isNatural,
+            [FromQuery] decimal? minPrice,
+            [FromQuery] decimal? maxPrice,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            var searchDto = new OrchidSearchDto
+            {
+                Name = name,
+                CategoryId = categoryId,
+                IsNatural = isNatural,
+                MinPrice = minPrice,
+                MaxPrice = maxPrice,
+                Page = page,
+                PageSize = pageSize
+            };
+
+            var orchids = await _orchidService.SearchOrchidsAsync(searchDto);
+            return Ok(orchids);
+        }
           
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<OrchidDto>> GetOrchidById(Guid id)
         {
             var orchid = await _orchidService.GetOrchidByIdAsync(id);
