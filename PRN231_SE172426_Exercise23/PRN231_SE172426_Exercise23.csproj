@@ -16,8 +16,4 @@
     <ProjectReference Include="..\Service\Service.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\OrchidManagement.Client\OrchidManagement.Client.csproj" />
-  </ItemGroup>
-
 </Project>

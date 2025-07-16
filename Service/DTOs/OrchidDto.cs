@@ -6,7 +6,7 @@ namespace Service.DTOs
 {
     public class OrchidDto
     {
-        [JsonPropertyName("id")]
+        [JsonPropertyName("orchid_id")]
         public Guid Id { get; set; }
 
         [JsonPropertyName("orchid_name")]
@@ -18,14 +18,23 @@ namespace Service.DTOs
         [JsonPropertyName("price")]
         public decimal Price { get; set; }
 
-        [JsonPropertyName("category_name")]
-        public string CategoryName { get; set; }
+        [JsonPropertyName("category")]
+        public OrchidCategoryDto Category { get; set; }
 
-        [JsonPropertyName("image_url")]
+        [JsonPropertyName("orchid_url")]
         public string ImageUrl { get; set; }
 
         [JsonPropertyName("is_natural")]
         public bool IsNatural { get; set; }
+    }
+
+    public class OrchidCategoryDto
+    {
+        [JsonPropertyName("category_id")]
+        public Guid CategoryId { get; set; }
+
+        [JsonPropertyName("category_name")]
+        public string CategoryName { get; set; }
     }
 
     public class CreateOrchidDto
@@ -53,5 +62,29 @@ namespace Service.DTOs
 
         [JsonPropertyName("is_natural")]
         public bool IsNatural { get; set; }
+    }
+
+    public class OrchidSearchDto
+    {
+        [JsonPropertyName("orchid_name")]
+        public string? Name { get; set; }
+
+        [JsonPropertyName("category_id")]
+        public Guid? CategoryId { get; set; }
+
+        [JsonPropertyName("is_natural")]
+        public bool? IsNatural { get; set; }
+
+        [JsonPropertyName("min_price")]
+        public decimal? MinPrice { get; set; }
+
+        [JsonPropertyName("max_price")]
+        public decimal? MaxPrice { get; set; }
+
+        [JsonPropertyName("page")]
+        public int Page { get; set; } = 1;
+
+        [JsonPropertyName("page_size")]
+        public int PageSize { get; set; } = 10;
     }
 }

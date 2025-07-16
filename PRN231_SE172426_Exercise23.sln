@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36121.58 d17.14
+VisualStudioVersion = 17.14.36121.58
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRN231_SE172426_Exercise23", "PRN231_SE172426_Exercise23\PRN231_SE172426_Exercise23.csproj", "{4899B678-D205-4B37-BC30-4D2DAAA09F60}"
 EndProject
@@ -12,8 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessObject", "BusinessObject\BusinessObject.csproj", "{4663DDFF-257F-4C40-9917-50B8C03D344B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{6686DF26-8A18-40B6-BA25-D0A435D3E2BE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrchidManagement.Client", "OrchidManagement.Client\OrchidManagement.Client.csproj", "{6FC96549-EA92-4805-A4A4-B923551C3ACD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +39,6 @@ Global
 		{6686DF26-8A18-40B6-BA25-D0A435D3E2BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6686DF26-8A18-40B6-BA25-D0A435D3E2BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6686DF26-8A18-40B6-BA25-D0A435D3E2BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6FC96549-EA92-4805-A4A4-B923551C3ACD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6FC96549-EA92-4805-A4A4-B923551C3ACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6FC96549-EA92-4805-A4A4-B923551C3ACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6FC96549-EA92-4805-A4A4-B923551C3ACD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

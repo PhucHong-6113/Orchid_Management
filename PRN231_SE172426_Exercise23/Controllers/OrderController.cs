@@ -30,6 +30,7 @@ namespace PRN231_SE172426_Exercise23.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<OrderDto>> GetOrderById(Guid id)
         {
             var order = await _orderService.GetOrderByIdAsync(id);

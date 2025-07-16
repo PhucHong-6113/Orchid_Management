@@ -19,13 +19,14 @@ namespace Service.JWT
             _jwtSettings = jwtSettings.Value;
         }
 
-        public string GenerateToken(string userId, string username, IEnumerable<string> roles = null)
+        public string GenerateToken(string userId, string username, string email, IEnumerable<string> roles = null)
         {
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId),
                 new Claim(JwtRegisteredClaimNames.Name, username),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, email)
             };
 
             // Add roles if available
